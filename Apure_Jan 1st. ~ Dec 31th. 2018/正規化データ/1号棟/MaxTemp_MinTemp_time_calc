@@ -1,0 +1,75 @@
+Libre Office 表計算 VBA
+
+REM  *****  BASIC  *****
+'最高気温と最低気温の算出と、その時間の記録'
+Option VBASupport 1
+Sub Main
+	Dim hRow As Long '日にちの行目
+	Dim cRow As Long '日にちの行目
+	hRow = 2 '2行目から始まる
+	cRow = 2 '2行目から始まる
+	Dim count As Long ' 平均の算出で用いる
+	count = 0
+
+	Dim date1 As Date, date2 As Date '日にちを格納する変数
+	date1 = Cells(cRow, 3).Value
+	date2 = Cells(hRow, 8).Value
+	Dim flag As boolean
+	flag = false
+	
+	Dim maxTemp As Double '最高気温を格納する変数
+	maxTemp = 0
+	Dim minTemp As Double '最低気温の値を格納する変数
+	minTemp = 0
+	
+	Dim maxTemp_Time As String, minTemp_Time As String '最高・最低気温の時刻を格納する変数
+	maxTemp_Time = ""
+	minTemp_Time = ""
+	
+	For cRow = 2 To 49488
+		if date1 = date2 Then
+			if flag = true Then
+				if Cells(cRow, 6).Value > maxTemp Then
+					maxTemp = Cells(cRow, 6).Value
+					maxTemp_Time = Cells(cRow, 2).Value
+				End If
+				if Cells(cRow, 6).Value < minTemp Then
+					minTemp = Cells(cRow, 6).Value
+					minTemp_Time = Cells(cRow, 2).Value
+				End If
+			End If
+			
+			if flag = false Then
+				maxTemp = Cells(cRow, 6).Value
+				minTemp = Cells(cRow, 6).Value
+				maxTemp_Time = Cells(cRow, 2).Value
+				minTemp_Time = Cells(cRow, 2).Value
+				flag = true
+			End If
+			
+			date1 = Cells(cRow + 1, 3).Value
+			
+			if date1 <> date2 Then
+				Cells(hRow, 14).Value = minTemp_Time
+				Cells(hRow, 15).Value = minTemp
+				Cells(hRow, 16).Value = maxTemp_Time
+				Cells(hRow, 17).Value = maxTemp
+				Init = 0
+				minTemp_Time = ""
+				maxTemp_Time = ""
+				minTemp = 25
+				maxTemp = 0
+				hRow = hRow + 1
+				date2 = Cells(hRow, 8).Value
+			End If
+				
+		End If
+	Next cRow
+	
+	MsgBox "Hello VBA"
+	num = 100
+	num = num * 2
+	MsgBox  "答えは、"& num & "です"
+End Sub
+
+
