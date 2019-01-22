@@ -1,0 +1,71 @@
+Libre Office 表計算 VBA
+
+REM  *****  BASIC  *****
+'気温、湿度、二酸化炭素濃度の平均算出'
+Option VBASupport 1
+
+Sub Main
+	Dim hRow As Long '日にちの行目
+	Dim cRow As Long '日にちの行目
+	hRow = 2 '2行目から始まる
+	cRow = 2 '2行目から始まる
+	Dim count As Long ' 平均の算出で用いる
+	count = 0
+	Dim ID_from As Integer, ID_to As Integer  
+	ID_from = 0
+	ID_to = 0
+	Dim date1 As Date, date2 As Date '日にちを格納する変数
+	date1 = Cells(cRow, 3).Value
+	date2 = Cells(hRow, 8).Value
+	Dim CO2 As Double 'CO2の値を格納する変数
+	CO2 = 0
+	Dim Hum As Double '湿度の値を格納する変数
+	Hum = 0
+	Dim Temp As Double '気温の値を格納する変数
+	Temp = 0
+	Dim averageCO2 As Double '平均を格納する変数
+	averageCO2 = 0
+	Dim averageHum As Double '平均を格納する変数
+	averageHum = 0
+	Dim averageTemp As Double '平均を格納する変数
+	averageTemp = 0
+
+	
+	For cRow = 2 To 49488
+	
+		if date1 = date2 Then
+			count = count + 1
+			CO2 = CO2 + Cells(cRow, 4).Value
+			Hum = Hum + Cells(cRow, 5).Value
+			Temp = Temp + Cells(cRow, 6).Value
+			date1 = Cells(cRow + 1, 3).Value ' date1を更新
+			
+			if date1 <> date2 Then
+				averageCO2 = CO2 / count
+				averageHum = Hum / count
+				averageTemp = Temp / count
+				Cells(hRow, 11).Value = averageCO2
+				Cells(hRow, 12).Value = averageHum
+				Cells(hRow, 13).Value = averageTemp
+				averageCO2 = 0
+				averageHum = 0
+				averageTemp = 0
+				CO2 = 0
+				Hum = 0
+				Temp = 0
+				count = 0
+				hRow = hRow + 1
+				date2 = Cells(hRow, 8).Value
+			End If
+		End If
+	Next cRow
+	
+	MsgBox "Hello VBA"
+	num = 100
+	num = num * 2
+	MsgBox  "答えは、"& num & "です"
+End Sub
+
+Sub Macro1
+
+End Sub
