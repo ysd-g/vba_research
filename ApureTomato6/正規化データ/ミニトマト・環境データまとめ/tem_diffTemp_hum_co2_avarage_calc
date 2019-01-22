@@ -1,0 +1,122 @@
+REM  *****  BASIC  *****
+'日ごとの気温、Diff気温、湿度、二酸化炭素濃度の平均算出'
+Option VBASupport 1
+
+Sub Main
+	Dim rRow As Long '日にちの行目
+	Dim bRow As Long '日にちの行目
+	rRow = 2 '2行目から始まる
+	bRow = 319 '2行目から始まる
+	Dim count As Long ' 平均の算出で用いる
+	count = 0
+	Dim ID_from As Integer, ID_to As Integer  
+	ID_from = 0
+	ID_to = 0
+	Dim date1 As Date, date2 As Date, date3 As Date, date4 As Date '日にちを格納する変数
+	date1 = Cells(bRow, 2).Value
+	date2 = Cells(rRow, 18).Value
+	date3 = Cells(rRow, 18).Value
+	date4= Cells(rRow, 18).Value
+	Dim CO2 As Double 'CO2の値を格納する変数
+	CO2 = 0
+	Dim Hum As Double '湿度の値を格納する変数
+	Hum = 0
+	Dim Temp As Double '気温の値を格納する変数
+	Temp = 0
+	Dim DiffTemp As Double 'Diff気温の値を格納する変数
+	DiffTemp = 0
+	Dim averageCO2 As Double '平均を格納する変数
+	averageCO2 = 0
+	Dim averageHum As Double '平均を格納する変数
+	averageHum = 0
+	Dim averageTemp As Double '平均を格納する変数
+	averageTemp = 0
+	Dim averageDiffTemp As Double '平均を格納する変数
+	averageDiffTemp = 0
+	Dim flag As Integer
+	flag = 1
+	Dim flagR As Integer
+	flagR = 0
+
+	
+	For bRow = 2 To 629
+		If flag = 2 Then
+			date4 = Cells(bRow, 2).Value
+			If date1 = date4 Then
+				Cells(bRow, 13).Value = averageTemp '気温'
+				Cells(bRow, 14).Value = averageDiffTemp 'Diff気温'
+				Cells(bRow, 15).Value = averageHum '湿度'
+				Cells(bRow, 16).Value = averageCO2 'CO2'
+				If date1 <> date1 + 1 Then
+					Temp = 0 '気温'
+					DiffTemp = 0 'Diff気温'
+					Hum = 0 '湿度'
+					CO2 = 0 'CO2'
+					averageTemp = 0 '気温'
+					averageDiffTemp = 0 'Diff気温'
+					averageHum = 0 '湿度'
+					averageCO2 = 0 'CO2'
+					count = 0
+					flag = 0
+					date1 = ""
+					date2 = ""
+					date3 = ""
+				End If
+			End If
+		End If
+		
+		If flag = 1 Then
+			date1 = Cells(bRow, 2).Value
+			date2 = date1 - 31
+			date3 = Cells(rRow, 18).Value
+			
+			For rRow = 2 To 366
+				date3 = Cells(rRow, 18).Value
+				If date2 = date3 Then
+					count = 1
+					flagR = 1
+				End If
+				
+				If flagR = 1 Then
+					If count <= 30  Then
+						DiffTemp = DiffTemp + Cells(rRow, 26).Value 'Diff気温'
+						Temp = Temp + Cells(rRow, 21).Value '気温'
+						Hum = Hum + Cells(rRow, 20).Value '湿度'
+						CO2 = CO2 + Cells(rRow, 19).Value 'CO2'
+						count = count + 1
+					End If
+					
+					if count = 31 Then
+						averageDiffTemp = DiffTemp / (count - 1) 'Diff気温'
+						averageTemp = Temp / (count - 1) '気温'
+						averageHum = Hum / (count - 1) '湿度'
+						averageCO2 = CO2 / (count - 1) 'CO2'
+						Cells(bRow, 13).Value = averageTemp '気温'
+						Cells(bRow, 14).Value = averageDiffTemp 'Diff気温'
+						Cells(bRow, 15).Value = averageHum '湿度'
+						Cells(bRow, 16).Value = averageCO2 'CO2'
+						flag = 2
+						flagR = 0
+						GoTo continue
+					End If
+						
+				End If
+			Next rRow
+		End If
+				
+
+
+		continue:
+
+		If flag = 0 Then
+			flag = 1
+		End If
+	Next bRow
+	
+	
+		
+	MsgBox "Hello VBA"
+	num = 100
+	num = num * 2
+	MsgBox  "答えは、"& num & "です"
+End Sub
